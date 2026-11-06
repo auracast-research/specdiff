@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bluetooth Core Specification Changes</title>
+<meta name="description" content="What changed in the Bluetooth Core Specification from {{ first }} to {{ last }}, section by section and sentence by sentence.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="{{ 'favicon.svg'|asset }}" type="image/svg+xml">
+<link rel="preload" href="fonts/atkinson-hyperlegible-next.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/atkinson-hyperlegible-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ 'style.css'|asset }}">
+<script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}</script>
+<script defer src="{{ 'app.js'|asset }}" data-version="{{ data_version }}"></script>
+</head>
+<body>
+<a class="skip" href="#changes">Skip to the changes</a>
+
+<div class="page">
+<div class="content">
+  <header class="intro">
+    <div class="intro-line">
+      <h1>Bluetooth Core Specification Changes</h1>
+      <fieldset class="theme" data-theme-picker hidden>
+        <legend class="visually-hidden">Theme</legend>
+        <label title="Follow the system setting"><input type="radio" name="theme" value="auto"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14.5h5M8 11.5v3"/></svg><span class="visually-hidden">Follow the system</span></label>
+        <label title="Light"><input type="radio" name="theme" value="light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06"/></svg><span class="visually-hidden">Light</span></label>
+        <label title="Dark"><input type="radio" name="theme" value="dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.5 5.5 0 1 1 6.4 2.5a4.5 4.5 0 0 0 7.1 7.1Z"/></svg><span class="visually-hidden">Dark</span></label>
+      </fieldset>
+    </div>
+    <details class="how" id="how">
+      <summary><span class="version">Core {{ first }} to {{ last }}</span> <span class="muted">{{ versions|length }} versions, {{ sections }} sections, compared sentence by sentence.</span> <span class="how-label">How changes are read</span></summary>
+      <div class="how-body">
+        <p>Each version is split into sections and each section into sentences (a table row, a code line and a figure title count as one). A section is followed through renumbering and retitling; a sentence that stayed is matched to its old self, and a changed one is compared word by word.</p>
+        <p>An edit is <strong>editorial</strong> when it changes nothing a reader acts on: case, punctuation or quotes; a name written another way (<code>LE Set Scan Enable</code> becoming <code>HCI_LE_Set_Scan_Enable</code>); a renumbered reference; or a <strong>sweeping edit</strong>, a replacement the version makes everywhere (<code>master</code> becoming <code>central</code> in 5.3), found by counting. Editorial edits are hidden unless you ask for them.</p>
+        <p>Everything else is a change. A <strong>small edit</strong> changes at most three sentences of a section that already existed: the kind that is easy to miss. Over several versions the sentences are counted once each, as they differ between the two versions you chose. Changes that add, remove or swap <em>shall</em>, <em>should</em>, <em>may</em> and the like, or a negation, come first, and edits to sentences that stay before sentences added whole; changed values are marked.</p>
+        <p>Sweeping edits are a judgment by frequency, so each one lists where it applied, and you can count any of them as a change instead.</p>
+        <p>Versions up to 5.3 are read from the PDF, later ones from the HTML. Where the format changes (5.3 to 5.4) tables and equations come out differently: scraps of tables and equations whose words are on both sides are set aside as extraction differences, but expect more noise in that step.</p>
+      </div>
+    </details>
+  </header>
+
+  <form class="finder" role="search" data-controls>
+    <fieldset class="switch">
+      <legend class="visually-hidden">Show</legend>
+      <label><input type="radio" name="view" value="changes" checked><span>Changes <span class="n" data-count-view="changes"></span></span></label>
+      <label><input type="radio" name="view" value="map"><span>Map</span></label>
+      <label><input type="radio" name="view" value="sweeping"><span>Sweeping edits <span class="n" data-count-view="sweeping"></span></span></label>
+    </fieldset>
+    <fieldset class="range">
+      <legend class="visually-hidden">Versions</legend>
+      <label class="range-end"><span class="range-label">From</span>
+        <select name="from">
+          {% for v in versions[:-1] %}<option value="{{ loop.index0 }}">{{ v.label }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="range-end"><span class="range-label">to</span>
+        <select name="to">
+          {% for v in versions[1:] %}<option value="{{ loop.index }}">{{ v.label }}</option>{% endfor %}
+        </select>
+      </label>
+      <span class="range-step">
+        <button type="button" data-shift="-1" aria-label="One version earlier" title="One version earlier">&larr;</button>
+        <button type="button" data-shift="1" aria-label="One version later" title="One version later">&rarr;</button>
+      </span>
+    </fieldset>
+    <div class="search">
+      <label for="q" class="visually-hidden">Search</label>
+      <input id="q" name="q" type="search" placeholder="Search sections, changed text, numbers" autocomplete="off" spellcheck="false">
+      <kbd aria-hidden="true">/</kbd>
+    </div>
+  </form>
+
+  <div class="rail" data-rail aria-hidden="true"></div>
+
+  <button type="button" class="filters-toggle" data-filters-toggle aria-expanded="false" aria-controls="filters">Filters <span class="n" data-filters-active></span></button>
+  <div class="filters" id="filters" data-filters>
+    <fieldset class="filter chips" data-only="changes">
+      <legend>Show</legend>
+      <div class="chip-list" data-kinds></div>
+    </fieldset>
+    <div class="filter-row">
+      <fieldset class="filter signals" data-only="changes map">
+        <legend>Marked</legend>
+        <div class="chip-list">
+          <label class="check"><input type="checkbox" name="signal" value="n"><span>shall, should, may</span></label>
+          <label class="check"><input type="checkbox" name="signal" value="x"><span>negation</span></label>
+          <label class="check"><input type="checkbox" name="signal" value="v"><span>values</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="filter where">
+        <legend id="part-label">Where</legend>
+        <select name="part" aria-labelledby="part-label">
+          <option value="">The whole specification</option>
+          {% for vol, parts in volumes %}
+          <optgroup label="Vol {{ vol }}">
+            {% for part in parts %}<option value="{{ part.key }}">Vol {{ vol }}, Part {{ part.key[1:] }}: {{ part.title }}</option>{% endfor %}
+          </optgroup>
+          {% endfor %}
+        </select>
+      </fieldset>
+      <label class="check" data-only="changes"><input type="checkbox" name="editorial"><span>Show editorial edits in the text</span></label>
+      <label class="check" data-only="map"><input type="checkbox" name="only"><span>Only sections changed in the range</span></label>
+    </div>
+  </div>
+
+<main>
+  <p class="count" data-count aria-live="polite">Loading&hellip;</p>
+  <noscript><p class="count">This page loads the changes with JavaScript.</p></noscript>
+
+  <section class="view" data-view="changes" id="changes">
+    <table class="listing changes">
+      <caption class="visually-hidden">Changes between the chosen versions</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="c-sec" data-sort="order">Section</th>
+          <th scope="col" class="c-change" data-sort="score" aria-sort="descending">Change</th>
+          <th scope="col" class="c-size" data-sort="size">Sentences</th>
+          <th scope="col" class="c-in" data-sort="in">In</th>
+        </tr>
+      </thead>
+      <tbody data-rows></tbody>
+    </table>
+    <p class="more" data-more hidden><button type="button" data-more-button>Show more</button></p>
+  </section>
+
+  <section class="view" data-view="map" hidden>
+    <div class="map" data-map role="grid" aria-label="Sections across versions"></div>
+  </section>
+
+  <section class="view" data-view="sweeping" hidden>
+    <p class="view-intro">Replacements a version makes all over the specification. They are counted as editorial, so a section whose only change is one of these doesn't show as changed. They are a judgment by frequency: open one to see where it applied, and untick it to count it as a change.</p>
+    <table class="listing sweeping">
+      <caption class="visually-hidden">Sweeping edits between the chosen versions</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="c-in">In</th>
+          <th scope="col">Was</th>
+          <th scope="col">Is</th>
+          <th scope="col" class="c-num">Times</th>
+          <th scope="col" class="c-num">Sections</th>
+          <th scope="col" class="c-ed">Editorial</th>
+        </tr>
+      </thead>
+      <tbody data-rules></tbody>
+    </table>
+  </section>
+
+  <div class="empty" data-empty hidden>
+    <p data-empty-text>No changes match.</p>
+    <p class="empty-actions"><button type="button" data-clear>Clear search and filters</button></p>
+  </div>
+</main>
+</div>
+
+  <aside class="panel" aria-labelledby="panel-title" data-panel hidden>
+    <div class="panel-top">
+      <h2 class="panel-label" id="panel-title">Section</h2>
+      <button type="button" class="close" data-close aria-label="Close the section" title="Close (Esc)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    </div>
+    <div data-panel-body></div>
+  </aside>
+</div>
+
+<div class="tooltip" data-tooltip role="tooltip" hidden></div>
+<p class="toast" data-status role="status"></p>
+</body>
+</html>
